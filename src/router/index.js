@@ -3,7 +3,9 @@ import HomeView from "@/views/HomeView.vue";
 import RecommendationView from "@/views/RecommendationView.vue";
 import BoardView from "@/views/BoardView.vue";
 import AttractionView from "@/views/AttractionView.vue";
-import MemberView from "@/views/MemberView.vue";
+import MemberLogin from "@/components/member/MemberLogin.vue";
+import MemberJoin from "@/components/member/MemberJoin.vue";
+import MemberMyPage from "@/components/member/MemberMyPage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,18 +23,35 @@ const router = createRouter({
     {
       path: "/board",
       name: "board",
-      component: BoardView
+      component: BoardView,
     },
     {
       path: "/attraction",
       name: "attraction",
-      component: AttractionView
+      component: AttractionView,
     },
     {
       path: "/member",
       name: "member",
-      component: MemberView
-    }
+      redirect: "/member/login",
+      children: [
+        {
+          path: "login",
+          name: "memberLogin",
+          component: MemberLogin,
+        },
+        {
+          path: "join",
+          name: "memberJoin",
+          component: MemberJoin,
+        },
+        {
+          path: "mypage/:memberId",
+          name: "memberMyPage",
+          component: MemberMyPage,
+        },
+      ],
+    },
   ],
 });
 
