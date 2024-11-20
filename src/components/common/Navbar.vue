@@ -68,6 +68,7 @@
 </template>
 
 <script setup>
+import { onMounted } from "vue";
 import { useMemberStore } from "@/stores/member";
 
 const memberStore = useMemberStore();
@@ -78,6 +79,10 @@ const member = memberStore.member;
 const logout = () => {
   console.log("User logged out!");
 };
+
+onMounted(() => {
+  document.getElementById("navbarScroll").classList.toggle = false;
+});
 </script>
 
 <style scoped>

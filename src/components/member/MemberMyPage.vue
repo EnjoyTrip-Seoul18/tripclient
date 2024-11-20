@@ -82,11 +82,14 @@
 
 <script setup>
 import { useMemberStore } from "@/stores/member";
+import { onBeforeMount } from "vue";
 
 const memberStore = useMemberStore();
-
-memberStore.getMember();
 const member = memberStore.member;
+
+onBeforeMount(async () => {
+  memberStore.getMember();
+});
 
 const updateMember = async () => {
   try {

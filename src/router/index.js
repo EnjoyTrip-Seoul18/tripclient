@@ -6,6 +6,9 @@ import AttractionView from "@/views/AttractionView.vue";
 import MemberLogin from "@/components/member/MemberLogin.vue";
 import MemberJoin from "@/components/member/MemberJoin.vue";
 import MemberMyPage from "@/components/member/MemberMyPage.vue";
+import RecommendationType from "@/components/recommendation/RecommendationType.vue";
+import GetAttraction from "@/components/recommendation/GetAttraction.vue";
+import RecommendationResult from "@/components/recommendation/RecommendationResult.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,6 +22,23 @@ const router = createRouter({
       path: "/recommendation",
       name: "recommendation",
       component: RecommendationView,
+      children: [
+        {
+          path: "",
+          name: "GetAttraction",
+          component: GetAttraction,
+        },
+        {
+          path: "type",
+          name: "recommendationType",
+          component: RecommendationType,
+        },
+        {
+          path: "result/:type",
+          name: "recommendationResult",
+          component: RecommendationResult,
+        },
+      ],
     },
     {
       path: "/board",
@@ -53,6 +73,14 @@ const router = createRouter({
       ],
     },
   ],
+});
+
+router.afterEach(() => {
+  const collapseBtn = document.querySelector(".container-fluid>button");
+  const collapse = document.getElementById("navbarScroll");
+  collapseBtn.setAttribute("class", "navbar-toggler");
+  collapseBtn.setAttribute("aria-expanded", false);
+  collapse.setAttribute("class", "collapse navbar-collapse");
 });
 
 export default router;
