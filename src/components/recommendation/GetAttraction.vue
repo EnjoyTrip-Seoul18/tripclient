@@ -12,81 +12,65 @@
         v-model="searchQuery"
         placeholder="검색어를 입력하세요"
       />
-      <button class="btn btn-outline-secondary w-25 h-100" @click="search">
+      <button
+        class="btn btn-outline-secondary w-25 h-100"
+        @click="addToRecommendations"
+      >
         검색
       </button>
     </div>
     <div
-      v-if="selected.length > 0"
+      v-if="recommendations.length > 0"
       class="d-flex flex-wrap justify-content-center mt-3"
     >
       <span
-        v-for="(item, index) in selected"
+        v-for="(item, index) in recommendations"
         :key="index"
         class="btn btn-outline-primary me-2 mb-2"
-        @click="removeItem(index)"
+        @click="removeFromRecommendations(index)"
       >
         {{ item }}
         <RemoveItem />
       </span>
     </div>
     <div class="d-flex justify-content-center">
-      <button
-        v-if="selected.length > 0"
-        class="btn btn-primary mt-3 me-2"
-        @click="clearAll"
-      >
-        입력 완료!
-      </button>
-      <button
-        v-if="selected.length > 0"
-        class="btn btn-danger mt-3"
-        @click="clearAll"
-      >
-        모두 지우기
-      </button>
+      <router-link to="/recommendation/type">
+        <button
+          v-if="recommendations.length > 0"
+          class="btn btn-primary mt-3 me-2"
+        >
+          입력 완료!
+        </button>
+      </router-link>
     </div>
   </div>
 </template>
 
 <script setup>
-import RemoveItem from "@/assets/icons/RemoveItem.vue";
 import { ref } from "vue";
+import { useRecommendationStore } from "@/stores/recommendation";
+import RemoveItem from "@/assets/icons/RemoveItem.vue";
 
-const STORAGE_KEY = "visited";
+const recommendationStore = useRecommendationStore();
+
 const searchQuery = ref("");
-const selected = ref([]);
 
-const loadFromLocalStorage = () => {
-  const savedData = localStorage.getItem(STORAGE_KEY);
-  if (savedData) {
-    selected.value = JSON.parse(savedData);
-  }
-};
-
-const search = () => {
+const addToRecommendations = () => {
   if (searchQuery.value.trim()) {
-    selected.value.push(searchQuery.value);
-    saveToLocalStorage();
+    recommendationStore.addRecommendation(searchQuery.value.trim());
     searchQuery.value = "";
   }
 };
 
-const saveToLocalStorage = () => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(selected.value));
+const removeFromRecommendations = (index) => {
+  recommendationStore.removeRecommendation(index);
 };
 
-const removeItem = (index) => {
-  selected.value.splice(index, 1);
-  saveToLocalStorage();
+const clearAllRecommendations = () => {
+  recommendationStore.clearRecommendations();
 };
 
-const clearAll = () => {
-  selected.value = [];
-  localStorage.removeItem(STORAGE_KEY);
-};
-
-loadFromLocalStorage();
+const { recommendations } = recommendationStore;
 </script>
 
 <style scoped></style>

@@ -1,9 +1,9 @@
 <template>
-  <GetAttraction />
+  <div>
+    <router-view />
+  </div>
 </template>
 
-<script setup>
-import GetAttraction from "@/components/recommendation/GetAttraction.vue";
-</script>
+<script setup></script>
 
 <style></style>
