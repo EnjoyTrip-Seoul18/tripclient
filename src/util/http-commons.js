@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const { VITE_VUE_API_URL } = import.meta.env;
+const { VITE_VUE_API_URL, VITE_VUE_AREA_URL } = import.meta.env;
 
 function localAxios(baseURL) {
   const instance = axios.create({ baseURL });
@@ -21,4 +21,11 @@ function serverAxios() {
   return instance;
 }
 
-export { localAxios, serverAxios };
+function areaAxios() {
+  const instance = axios.create({
+    baseURL: VITE_VUE_AREA_URL,
+  });
+  return instance;
+}
+
+export { localAxios, serverAxios, areaAxios };

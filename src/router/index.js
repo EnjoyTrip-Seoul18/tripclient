@@ -13,6 +13,9 @@ import BoardList from "@/components/board/BoardList.vue";
 import BoardDetail from "@/components/board/BoardDetail.vue";
 import BoardUpdate from "@/components/board/BoardUpdate.vue";
 import BoardWrite from "@/components/board/BoardWrite.vue";
+import AttractionData from "@/components/attraction/AttractionData.vue";
+import AttractionResult from "@/components/attraction/AttractionResult.vue";
+import AttractionMain from "@/components/attraction/AttractionMain.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -75,7 +78,23 @@ const router = createRouter({
     {
       path: "/attraction",
       name: "attraction",
-      component: AttractionView,
+      children: [
+        {
+          path: "",
+          name: "main",
+          component: AttractionMain,
+        },
+        {
+          path: "data",
+          name: "data",
+          component: AttractionData
+        },
+        {
+          path: "result",
+          name: "result",
+          component: AttractionResult
+        }
+      ]
     },
     {
       path: "/member",
