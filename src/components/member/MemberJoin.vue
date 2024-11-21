@@ -71,7 +71,7 @@
             />
           </div>
           <div class="col-auto text-center">
-            <button type="submit" class="btn btn-outline-primary mb-3">
+            <button type="submit" class="btn btn-outline-primary mb-3 me-3">
               회원가입
             </button>
             <button

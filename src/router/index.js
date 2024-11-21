@@ -93,7 +93,7 @@ const router = createRouter({
           component: MemberJoin,
         },
         {
-          path: "mypage/:memberId",
+          path: "mypage",
           name: "memberMyPage",
           component: MemberMyPage,
         },
