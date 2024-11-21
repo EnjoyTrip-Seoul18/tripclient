@@ -9,6 +9,11 @@ import MemberMyPage from "@/components/member/MemberMyPage.vue";
 import RecommendationType from "@/components/recommendation/RecommendationType.vue";
 import GetAttraction from "@/components/recommendation/GetAttraction.vue";
 import RecommendationResult from "@/components/recommendation/RecommendationResult.vue";
+import BoardList from "@/components/board/BoardList.vue";
+import BoardDetail from "@/components/board/BoardDetail.vue";
+import BoardUpdate from "@/components/board/BoardUpdate.vue";
+import BoardWrite from "@/components/board/BoardWrite.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,8 +47,31 @@ const router = createRouter({
     },
     {
       path: "/board",
-      name: "board",
+      name: "boardView",
       component: BoardView,
+      redirect: { path: "/board/list", query: { pgno: "1" } },
+      children: [
+        {
+          path: "list",
+          name: "boardList",
+          component: BoardList
+        },
+        {
+          path: "detail",
+          name: "boardDetail",
+          component: BoardDetail
+        },
+        {
+          path: "update",
+          name: "boardUpdate",
+          component: BoardUpdate
+        },
+        {
+          path: "write",
+          name: "boardWrite",
+          component: BoardWrite
+        },
+      ]
     },
     {
       path: "/attraction",
