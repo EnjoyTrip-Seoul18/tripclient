@@ -72,8 +72,6 @@ import { onMounted } from "vue";
 import { useMemberStore } from "@/stores/member";
 
 const memberStore = useMemberStore();
-
-memberStore.getMember();
 const member = memberStore.member;
 
 const logout = () => {
