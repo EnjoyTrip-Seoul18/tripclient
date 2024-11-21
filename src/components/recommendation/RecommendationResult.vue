@@ -1,8 +1,5 @@
 <template></template>
 
-<script setup>
-import { nearest } from "@/api/local/recommendation";
-nearest();
-</script>
+<script setup></script>
 
 <style></style>
