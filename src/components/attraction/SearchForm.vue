@@ -19,21 +19,31 @@
     <div class="formClass mb-3">
       <select v-model="localcontentType" class="form-select select-box">
         <option value="0" selected>관광지 유형</option>
-        <option v-for="type in contentTypes" :key="type.value" :value="type.value">
+        <option
+          v-for="type in contentTypes"
+          :key="type.value"
+          :value="type.value"
+        >
           {{ type.label }}
         </option>
       </select>
     </div>
     <div class="mt-3 d-flex justify-content-center align-items-center">
-      <input type="search" class="form-control h-100 search-input" v-model="localkeyword" placeholder="검색어를 입력하세요" />
-      <button class="btn w-25 h-100 search-button" type="button" @click="emitSearch">
-        검색
+      <input
+        type="search"
+        class="form-control search-input"
+        v-model="localkeyword"
+        placeholder="검색어를 입력하세요"
+      />
+      <button class="btn w-25 search-button" type="button" @click="emitSearch">
+        <SearchIcon />
       </button>
     </div>
   </form>
 </template>
 
 <script setup>
+import SearchIcon from "@/assets/icons/SearchIcon.vue";
 import { ref, watch } from "vue";
 
 // Props로 데이터 전달
