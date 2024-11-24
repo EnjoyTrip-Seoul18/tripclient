@@ -7,35 +7,62 @@ async function login(form, success, fail) {
   await server.post("/member/login", form).then(success).catch(fail);
 }
 
-async function info(header, success, fail) {
+async function info(request, success, fail) {
   // console.log("member.js 회원 정보 요청");
   await server
     .get("/member/info", {
       headers: {
-        Authorization: `${header.trim()}`,
+        Authorization: `Bearer ${request.trim()}`
+      }
+    })
+    .then(success)
+    .catch(fail);
+}
+
+async function updateMember(request, success, fail) {
+  console.log("member.js 회원 정보 수정 요청");
+  await server
+    .patch("/member/update", {
+      headers: {
+        Authorization: `Bearer ${request.accessToken.trim()}`
+      },
+      body: request.member
+    })
+    .then(success)
+    .catch(fail);
+}
+
+async function deleteMember(request, success, fail) {
+  console.log("member.js 회원 삭제 요청");
+  await server
+    .delete("/member/delete", {
+      headers: {
+        Authorization: `Bearer ${request.trim()}`
+      }
+    })
+    .then(success)
+    .catch(fail);
+}
+
+async function join(request, success, fail) {
+  console.log("member.js 회원 가입 요청 ", request);
+  await server
+    .post("/member/join", request)
+    .then(success)
+    .catch(fail);
+}
+
+async function idCheck(request, success, fail) {
+  console.log("member.js 아이디 확인", request);
+  await server
+    .post("/member/idCheck", {
+      data: {
+        memberId : request,
       },
     })
     .then(success)
     .catch(fail);
 }
 
-async function updateMember(member, success, fail) {
-  console.log("member.js 회원 정보 수정 요청");
-  await server
-    .post("/member/update", member)
-    .then(success)
-    .catch(fail);
-}
-
-async function deleteMember(memberId, success, fail) {
-  console.log("member.js 회원 삭제 요청");
-  await server
-    .delete("/member/delete", {
-      data: { memberId },
-    })
-    .then(success)
-    .catch(fail);
-}
-
-export { login, info, updateMember, deleteMember };
+export { login, info, updateMember, deleteMember, join, idCheck };
 

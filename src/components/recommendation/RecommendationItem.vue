@@ -7,23 +7,15 @@
     </td>
     <td>{{ props.item.name }}</td>
     <td>
-      <button class="btn btn-primary me-2 mb-2" @click="setStart(props.item)">
-        출발지
-      </button>
-
-      <button class="btn btn-warning me-2 mb-2" @click="addMid(props.item)">
-        경유지
-      </button>
-
-      <button class="btn btn-success me-2 mb-2" @click="setEnd(props.item)">
-        목적지
+      <button class="btn btn-primary me-2 mb-2" @click="addRecommendation(props.item)">
+        선택하기
       </button>
     </td>
   </tr>
 </template>
 
 <script setup>
-import { useStorageStore } from "@/stores/storage";
+import { useRecommendationStore } from "@/stores/recommendation";
 
 const props = defineProps({
   item: {
@@ -36,7 +28,7 @@ const props = defineProps({
   },
 });
 
-const { setStart, addMid, setEnd } = useStorageStore();
+const { addRecommendation } = useRecommendationStore();
 </script>
 
 <style scoped></style>

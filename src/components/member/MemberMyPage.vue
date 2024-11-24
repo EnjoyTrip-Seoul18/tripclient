@@ -51,6 +51,7 @@ import { info, updateMember, deleteMember } from "@/api/member";
 import { useRouter } from "vue-router";
 
 const memberStore = useMemberStore();
+const accessToken = memberStore.accessToken;
 const router = useRouter();
 
 const member = ref({
@@ -62,12 +63,10 @@ const member = ref({
 });
 
 onBeforeMount(async () => {
-  const accessToken = memberStore.accessToken;
   if (!accessToken) {
     alert("로그인이 필요합니다.");
     return router.push("/member/login");
   }
-
   await info(
     accessToken,
     (response) => {
@@ -90,7 +89,9 @@ onBeforeMount(async () => {
 const handleUpdateMember = async () => {
   try {
     await updateMember(
-      member.value,
+      {
+        accessToken, member: member.value
+      },
       () => {
         alert("정보가 수정되었습니다.");
       },
@@ -107,7 +108,7 @@ const handleDeleteMember = async () => {
   if (!confirm("정말로 회원을 삭제하시겠습니까?")) return;
   try {
     await deleteMember(
-      member.value.memberId,
+      accessToken,
       () => {
         alert("회원이 삭제되었습니다.");
         memberStore.logout();

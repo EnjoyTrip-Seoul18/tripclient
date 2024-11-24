@@ -1,47 +1,54 @@
 <template>
   <div class="container container-section">
     <div style="height: 70px"></div>
-    <div class="row"></div>
-    <div class="col-md-12">
-      <h2 class="mb-3 header-title">여행 계획</h2>
-      <p>출발지 경유지 도착지로 최단거리 구하기!</p>
-      <SearchForm :sido="sido" :gugun="gugun" :contentType="contentType" :keyword="keyword" :sidos="sidos"
-        :guguns="guguns" :contentTypes="contentTypes" @search="handleSearch" />
 
+    <!-- 검색 섹션 -->
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="mb-3 header-title">어디가지?</h2>
+        <p>우선... 지금까지 방문한 곳들을 볼까요?</p>
+        <SearchForm :sido="sido" :gugun="gugun" :contentType="contentType" :keyword="keyword" :sidos="sidos"
+          :guguns="guguns" :contentTypes="contentTypes" @search="handleSearch" />
+      </div>
+    </div>
+
+    <!-- 지도 섹션 -->
+    <div>
       <KakaoMap :lat="coordinate.lat" :lng="coordinate.lng" :draggable="true" style="width: 100%; height: 400px"
         class="mt-3" id="kakao-map">
         <div v-for="(marker, index) in markers" :key="index">
           <KakaoMapMarker :lat="marker.lat" :lng="marker.lng" @onClickKakaoMapMarker="toggleOverlay(index)"
             :clickable="true" />
-          <KakaoMapCustomOverlay :lat="marker.lat" :lng="marker.lng" :yAnchor="1.4" :visible="marker.visible" :content="generateOverlayContent(marker.name, marker.image, marker.address)
-            " />
+          <KakaoMapCustomOverlay :lat="marker.lat" :lng="marker.lng" :yAnchor="1.4" :visible="marker.visible"
+            :content="generateOverlayContent(marker.name, marker.image, marker.address)" />
         </div>
       </KakaoMap>
+    </div>
 
-      <div class="row mt-3">
-        <table class="table table-striped" v-if="tripList.length">
-          <thead>
-            <tr>
-              <th></th>
-              <th>이미지</th>
-              <th>관광지명</th>
-              <th>계획</th>
-            </tr>
-          </thead>
-          <tbody>
-            <SearchItem v-for="(trip, index) in tripList" :key="index" :item="trip" :index="index" />
-          </tbody>
-        </table>
-        <div v-else class="text-center">검색 결과가 없습니다.</div>
-      </div>
+    <!-- 추천 여행지 리스트 -->
+    <div class="row mt-3">
+      <h2>추천 여행지 목록</h2>
+      <table class="table table-striped" v-if="tripList.length">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>이미지</th>
+            <th>관광지명</th>
+            <th>계획</th>
+          </tr>
+        </thead>
+        <tbody>
+          <RecommendationItem v-for="(item, index) in tripList" :key="index" :item="item" :index="index" />
+        </tbody>
+      </table>
+      <div v-else class="text-center">추천할 여행지가 없습니다.</div>
+    </div>
+    <RecommendationResult class="mt-3"/>
 
-      <div class="container mt-3">
-        <h2>여행 경로</h2>
-        <StorageResult />
-      </div>
-
-      <button class="btn btn-primary mt-5" @click="getAttractionResult">
-        최적의 여행계획 짜기!
+    <!-- 최적화 버튼 -->
+    <div class="text-center mt-5">
+      <button class="btn btn-primary" @click="getRecommendationResult">
+        최적의 여행 계획 짜기!
       </button>
     </div>
   </div>
@@ -53,11 +60,11 @@ import {
   KakaoMapMarker,
   KakaoMapCustomOverlay,
 } from "vue3-kakao-maps";
-import SearchItem from "./SearchItem.vue";
 import SearchForm from "@/components/attraction/SearchForm.vue";
-import StorageResult from "@/components/attraction/StorageResult.vue";
-import { useStorageStore } from "@/stores/storage";
+import { useRecommendationStore } from "@/stores/recommendation";
 import router from "@/router";
+import RecommendationItem from "./RecommendationItem.vue";
+import RecommendationResult from "./RecommendationResult.vue";
 
 const coordinate = reactive({
   lat: 33.450701,
@@ -94,6 +101,7 @@ const contentTypes = reactive([
 
 const tripList = reactive([]);
 const markers = reactive([]);
+const { recommendation } = useRecommendationStore();
 
 const generateOverlayContent = (name, image, address) => `
   <div
@@ -228,15 +236,17 @@ const toggleOverlay = (index) => {
   });
 };
 
-const getAttractionResult = () => {
-  const { start, mid, end } = useStorageStore();
-  if (start.length == 0 || mid.length == 0 || end.length == 0) {
-    alert("누락된 항목이 있는지 확인하세요!");
+const getRecommendationResult = () => {
+  if (recommendation.length === 0) {
+    alert("여행지를 하나 이상 선택하세요!");
     return;
   }
-  router.push("/attraction/result");
+
+  console.log("Recommendation:", recommendation);
+  router.push("/recommendation/review");
 };
 </script>
+
 
 <style scoped>
 .container-section {
