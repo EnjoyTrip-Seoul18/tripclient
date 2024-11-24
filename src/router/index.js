@@ -2,17 +2,20 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import RecommendationView from "@/views/RecommendationView.vue";
 import BoardView from "@/views/BoardView.vue";
-import AttractionView from "@/views/AttractionView.vue";
 import MemberLogin from "@/components/member/MemberLogin.vue";
 import MemberJoin from "@/components/member/MemberJoin.vue";
 import MemberMyPage from "@/components/member/MemberMyPage.vue";
-import RecommendationType from "@/components/recommendation/RecommendationType.vue";
-import GetAttraction from "@/components/recommendation/GetAttraction.vue";
-import RecommendationResult from "@/components/recommendation/RecommendationResult.vue";
+import RecommendationMain from "@/components/recommendation/RecommendationMain.vue";
 import BoardList from "@/components/board/BoardList.vue";
 import BoardDetail from "@/components/board/BoardDetail.vue";
 import BoardUpdate from "@/components/board/BoardUpdate.vue";
 import BoardWrite from "@/components/board/BoardWrite.vue";
+import AttractionData from "@/components/attraction/AttractionData.vue";
+import AttractionResult from "@/components/attraction/AttractionResult.vue";
+import AttractionMain from "@/components/attraction/AttractionMain.vue";
+import AttractionReview from "@/components/attraction/AttractionReview.vue";
+import { useMemberStore } from "@/stores/member";
+import RecommendationReview from "@/components/recommendation/RecommendationReview.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,19 +32,14 @@ const router = createRouter({
       children: [
         {
           path: "",
-          name: "GetAttraction",
-          component: GetAttraction,
+          name: "recommendationMain",
+          component: RecommendationMain,
         },
         {
-          path: "type",
-          name: "recommendationType",
-          component: RecommendationType,
-        },
-        {
-          path: "result/:type",
-          name: "recommendationResult",
-          component: RecommendationResult,
-        },
+          path: "review",
+          name: "recommendationReview",
+          component: RecommendationReview,
+        }
       ],
     },
     {
@@ -75,7 +73,28 @@ const router = createRouter({
     {
       path: "/attraction",
       name: "attraction",
-      component: AttractionView,
+      children: [
+        {
+          path: "",
+          name: "main",
+          component: AttractionMain,
+        },
+        {
+          path: "data",
+          name: "data",
+          component: AttractionData
+        },
+        {
+          path: "result",
+          name: "result",
+          component: AttractionResult
+        },
+        {
+          path: "review",
+          name: "review",
+          component: AttractionReview
+        }
+      ]
     },
     {
       path: "/member",
@@ -101,6 +120,11 @@ const router = createRouter({
     },
   ],
 });
+
+router.beforeEach((to) => {
+  const store = useMemberStore();
+  if (to.meta.requiresAuth && !store.isLoggedIn) return 'member/login'
+})
 
 router.afterEach(() => {
   const collapseBtn = document.querySelector(".container-fluid>button");

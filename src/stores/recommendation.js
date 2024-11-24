@@ -4,20 +4,20 @@ import { defineStore } from "pinia";
 export const useRecommendationStore = defineStore(
   "recommendation",
   () => {
-    const recommendations = ref([]);
+    const recommendation = ref([]);
     function addRecommendation(item) {
-      if (!recommendations.value.includes(item)) {
-        recommendations.value.push(item);
+      if (!recommendation.value.includes(item)) {
+        recommendation.value.push(item);
       }
     }
     function removeRecommendation(index) {
-      recommendations.value.splice(index, 1);
+      recommendation.value.splice(index, 1);
     }
     function clearRecommendations() {
-      recommendations.value = [];
+      recommendation.value = [];
     }
     return {
-      recommendations,
+      recommendation,
       addRecommendation,
       removeRecommendation,
       clearRecommendations,
