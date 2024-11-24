@@ -54,12 +54,12 @@ const router = createRouter({
           component: BoardList,
         },
         {
-          path: "detail",
+          path: "detail/:boardId",
           name: "boardDetail",
           component: BoardDetail,
         },
         {
-          path: "update",
+          path: "update/:boardId",
           name: "boardUpdate",
           component: BoardUpdate,
         },

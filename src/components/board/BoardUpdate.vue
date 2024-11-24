@@ -6,7 +6,7 @@
         <!-- 제목 입력 -->
         <div class="mb-3">
           <label for="title" class="form-label">제목</label>
-          <input type="text" id="title" class="form-control" placeholder="제목을 입력하세요" v-model="formData.title"
+          <input type="text" id="title" class="form-control" placeholder="제목을 입력하세요" v-model="formData.subject"
             required />
         </div>
 
@@ -35,31 +35,80 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
+import { modifyArticle, getArticle } from "@/api/board";
+import { info } from "@/api/member";
+import { useMemberStore } from "@/stores/member";
+import router from "@/router";
+import { useRoute } from "vue-router";
 
-// 초기 데이터 (게시글 상세보기에서 받아온 데이터 예시)
-const existingPost = {
-  title: "기존 게시글 제목",
-  content: "기존 게시글 내용입니다. 여기에 내용을 수정하세요.",
-};
-
-// Form 데이터 초기화
+const route = useRoute();
 const formData = ref({
-  title: existingPost.title,
-  content: existingPost.content,
+  boardId: 0,
+  subject: "",
+  content: "",
 });
 
-// 제출 핸들러
-const onSubmit = () => {
-  console.log("수정된 게시글 데이터:", formData.value);
-  alert("게시글이 수정되었습니다!");
+const { accessToken } = useMemberStore();
+
+const onSubmit = async () => {
+  await modifyArticle(
+    {
+      board: formData.value,
+      accessToken: accessToken,
+    },
+    () => {
+      alert("게시글이 수정되었습니다!");
+      router.push(`/board/detail/${formData.value.boardId}`);
+    },
+    (error) => {
+      alert("게시글 수정 중 문제가 발생했습니다.");
+      console.error(error);
+    }
+  );
 };
+
+const getMemberId = async () => {
+  let id = "";
+  await info(accessToken,
+    (response) => {
+      id = response.data.userInfo.memberId;
+      console.log(id);
+    },
+    (error) => {
+      console.error(error);
+    }
+  );
+  return id;
+}
+
+onBeforeMount(async () => {
+  const boardId = route.params.boardId;
+  formData.value.boardId = boardId;
+  await getArticle({
+      boardId, accessToken
+    },
+    async (response) => {
+      let id = await getMemberId();
+      if(response.data.memberId != id) {
+        throw new Error('다른 유저입니다.');
+      }
+      formData.value.subject = response.data.subject;
+      formData.value.content = response.data.content;
+    },
+    (error) => {
+      alert("잘못된 접근입니다");
+      console.error(error);
+      useMemberStore().logout();
+      router.push("/member/login");
+    }
+  );
+});
 </script>
 
 <style>
 .fill-color2 {
   background-color: #f0f8ff;
-  /* 기본 색상 (하늘색 계열) */
   border-radius: 8px;
   border: 1px solid #ccc;
 }
