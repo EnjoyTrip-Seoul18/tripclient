@@ -20,7 +20,8 @@
           <tr v-for="board in boards" :key="board.boardId" class="text-center">
             <th scope="row">{{ board.boardId }}</th>
             <td class="text-start">
-              <router-link :to="{ name: 'boardDetail', query: { boardId: board.boardId } }" class="board-title link-dark">
+              <router-link :to="{ name: 'boardDetail', params: { boardId: board.boardId } }"
+                class="board-title link-dark">
                 {{ board.subject }}
               </router-link>
             </td>
@@ -33,49 +34,81 @@
       <RouterLink :to="'/board/write'">
         <button class="btn btn-primary ms-3 mb-3 row justify-content-center">글 작성</button>
       </RouterLink>
-      <Pagination :total-items="100" :items-per-page="10" :current-page="currentPage" @page-change="onPageChange" />
+      <Pagination :total-items="totalPageCount" :items-per-page="10" :current-page="currentPage" @page-change="onPageChange" />
     </div>
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue'
-// import MenuBar from '@/components/board/items/MenuBar'
-// import Pagination from '@/components/board/items/Pagination'
+import { listArticle } from '@/api/board';
+import router from '@/router';
+import { onBeforeMount, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
-const boards = ref([{
-  boardId: 1,
-  memberId: "ssafy",
-  subject: "첫 게시글",
-  content: "첫 내용",
-  hit: 11,
-  registerTime: "2024-01-01"
-},
-{
-  boardId: 2,
-  memberId: "ssafy",
-  subject: "두번째 게시글",
-  content: "두번째 내용",
-  hit: 12,
-  registerTime: "2024-01-02"
-},
-{
-  boardId: 3,
-  memberId: "ssafy",
-  subject: "세번째 게시글",
-  content: "세번째 내용",
-  hit: 13,
-  registerTime: "2024-01-03"
-},
-{
-  boardId: 4,
-  memberId: "admin",
-  subject: "첫 게시글",
-  content: "첫 내용",
-  hit: 14,
-  registerTime: "2024-01-04"
-},
+const request = ref({});
+const boards = ref([]);
+const currentPage = ref(0);
+const totalPageCount = ref(0);
+
+const getList = async (request) => {
+  await listArticle(request,
+    (response) => {
+      response.data.articles.forEach((board) => boards.value.push(board));
+      currentPage.value = response.data.currentPage;
+      totalPageCount.value = response.data.totalPageCount;
+    },
+    (error) => {
+      console.error(error);
+    }
+  )
+}
+
+const menuOptions = ref([
+  { name: "제목", value: "subject" },
+  { name: "작성자", value: "memberId" },
 ]);
+
+const handleOptionChange = (selectedOption) => {
+  request.value.key = selectedOption;
+};
+
+const handleSearchChange = (searchQuery) => {
+  request.value.word = searchQuery;
+};
+
+const handleSearchSubmit = () => {
+  router.push({
+    query: {
+      ...router.currentRoute.value.query,
+      key: request.value.key,
+      word: request.value.word,
+      pgno: 1,
+    },
+  });
+  getList(request);
+};
+
+const onPageChange = (newPage) => {
+  request.value.pgno = newPage;
+  router.push({
+    query: {
+      ...router.currentRoute.value.query,
+      pgno: newPage,
+    },
+  });
+  getList(request);
+};
+
+onBeforeMount(async () => {
+  const route = useRoute();
+  request.value = {
+    "word": route.query.word,
+    "pgno": route.query.pgno,
+    "user_id": route.query.userId,
+    "spp": 10
+  };
+  await getList(request);
+});
 </script>
 
 <style></style>

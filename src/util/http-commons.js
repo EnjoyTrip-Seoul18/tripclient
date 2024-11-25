@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const { VITE_VUE_API_URL } = import.meta.env;
+const { VITE_VUE_API_URL, VITE_VUE_AREA_URL } = import.meta.env;
 
 function localAxios(baseURL) {
   const instance = axios.create({ baseURL });
@@ -15,14 +15,17 @@ function serverAxios() {
   const instance = axios.create({
     baseURL: VITE_VUE_API_URL,
   });
-  const token = localStorage.getItem("authToken"); // 예: localStorage에 저장된 토큰
-  if (token) {
-    instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  }
   instance.defaults.headers.post["Content-Type"] = "application/json";
   instance.defaults.headers.put["Content-Type"] = "application/json";
-
+  instance.defaults.headers.patch["Content-Type"] = "application/json";
   return instance;
 }
 
-export { localAxios, serverAxios };
+function areaAxios() {
+  const instance = axios.create({
+    baseURL: VITE_VUE_AREA_URL,
+  });
+  return instance;
+}
+
+export { localAxios, serverAxios, areaAxios };

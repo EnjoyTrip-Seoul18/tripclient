@@ -8,77 +8,38 @@
         <form @submit.prevent="registerMember">
           <div class="mb-3">
             <label for="memberName" class="form-label">이름 :</label>
-            <input
-              type="text"
-              class="form-control"
-              id="memberName"
-              v-model="form.memberName"
-              placeholder="이름..."
-            />
+            <input type="text" class="form-control" id="memberName" v-model="form.memberName" placeholder="이름..." />
           </div>
           <div class="mb-3">
             <label for="memberId" class="form-label">아이디 :</label>
-            <input
-              type="text"
-              class="form-control"
-              id="memberId"
-              v-model="form.memberId"
-              @input="checkMemberId"
-              placeholder="아이디..."
-            />
+            <input type="text" class="form-control" id="memberId" v-model="form.memberId" @input="checkMemberId"
+              placeholder="아이디..." />
           </div>
           <div id="result-view" class="mb-3" :class="resultClass">
             {{ resultMessage }}
           </div>
           <div class="mb-3">
             <label for="memberPwd" class="form-label">비밀번호 :</label>
-            <input
-              type="password"
-              class="form-control"
-              id="memberPwd"
-              v-model="form.memberPwd"
-              placeholder="비밀번호..."
-            />
+            <input type="password" class="form-control" id="memberPwd" v-model="form.memberPwd" placeholder="비밀번호..." />
           </div>
           <div class="mb-3">
             <label for="pwdcheck" class="form-label">비밀번호확인 :</label>
-            <input
-              type="password"
-              class="form-control"
-              id="pwdcheck"
-              v-model="form.pwdcheck"
-              placeholder="비밀번호확인..."
-            />
+            <input type="password" class="form-control" id="pwdcheck" v-model="form.pwdcheck" placeholder="비밀번호확인..." />
           </div>
           <div class="mb-3">
             <label for="email" class="form-label">이메일 :</label>
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              v-model="form.email"
-              placeholder="example@example.com"
-            />
+            <input type="email" class="form-control" id="email" v-model="form.email"
+              placeholder="example@example.com" />
           </div>
           <div class="mb-3">
             <label for="address" class="form-label">주소 :</label>
-            <input
-              type="text"
-              class="form-control"
-              id="address"
-              v-model="form.address"
-              placeholder="서울시 강남구 역삼동"
-            />
+            <input type="text" class="form-control" id="address" v-model="form.address" placeholder="서울시 강남구 역삼동" />
           </div>
           <div class="col-auto text-center">
-            <button type="submit" class="btn btn-outline-primary mb-3">
+            <button type="submit" class="btn btn-outline-primary mb-3 me-3">
               회원가입
             </button>
-            <button
-              type="reset"
-              class="btn btn-outline-danger mb-3"
-              @click="resetForm"
-            >
+            <button type="reset" class="btn btn-outline-danger mb-3" @click="resetForm">
               초기화
             </button>
           </div>
@@ -90,6 +51,8 @@
 
 <script setup>
 import { ref } from "vue";
+import { idCheck, join } from "@/api/member"
+import router from "@/router";
 
 const resultMessage = ref("");
 const resultClass = ref("");
@@ -110,21 +73,24 @@ const checkMemberId = async () => {
     isUseId.value = false;
     return;
   }
-  try {
-    const response = await fetch(`/member/${form.value.memberId}`);
-    const data = await response.json();
-    if (data.cnt === 0) {
-      resultMessage.value = `${form.value.memberId}은 사용할 수 있습니다.`;
-      resultClass.value = "text-success";
-      isUseId.value = true;
-    } else {
-      resultMessage.value = `${form.value.memberId}은 사용할 수 없습니다.`;
-      resultClass.value = "text-danger";
-      isUseId.value = false;
+  await idCheck(
+    form.value.memberId,
+    (response) => {
+      const data = parseInt(response.data);
+      if (data === 0) {
+        resultMessage.value = `${form.value.memberId}은 사용할 수 있습니다.`;
+        resultClass.value = "text-success";
+        isUseId.value = true;
+      } else {
+        resultMessage.value = `${form.value.memberId}은 사용할 수 없습니다.`;
+        resultClass.value = "text-danger";
+        isUseId.value = false;
+      }
+    },
+    (error) => {
+      console.error("ID 체크 중 오류:", error);
     }
-  } catch (error) {
-    console.error("ID 체크 중 오류:", error);
-  }
+  );
 };
 
 const registerMember = async () => {
@@ -138,6 +104,7 @@ const registerMember = async () => {
   }
   if (!isUseId.value) {
     alert("아이디 중복 확인!!");
+    isUseId.value = true
     return;
   }
   if (!form.value.memberPwd) {
@@ -148,21 +115,18 @@ const registerMember = async () => {
     alert("비밀번호 확인!!");
     return;
   }
-  try {
-    await fetch("/member/join", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(this.form),
-    });
-    alert("회원가입 성공!");
-    this.$router.push("/");
-  } catch (error) {
-    alert("회원가입 중 오류 발생!");
-    console.error(error);
-  }
-};
+  await join(
+    form.value,
+    (response) => {
+      alert(response.data.message);
+      router.push("/");
+    },
+    (error) => {
+      alert("회원가입 중 오류 발생!");
+      console.error(error);
+    }
+  );
+}
 
 const resetForm = () => {
   form.value = {
