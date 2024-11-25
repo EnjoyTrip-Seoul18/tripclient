@@ -36,7 +36,7 @@ async function getReview(request, success, fail) {
               address : 주소
               latitude : 위도
               longitude : 경도
-              distance : before과 after 사이의 harversine 거리로, 단위는 km
+              distance : before과 after 사이의 harversine 거리로, 단위는 km야. 이 값이 10이 넘는게 있으면 무조건 비효율적이라 알려줘.
 
               이제 너가 응답해야 될 답변은 다음과 같아.
               1. 총평 : total,

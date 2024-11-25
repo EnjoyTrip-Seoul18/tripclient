@@ -7,15 +7,11 @@ import NodeGraph from "@/assets/icons/NodeGraph.vue";
 <template>
   <div>
     <header class="header"></header>
-    <section
-      class="theater-mode d-flex justify-content-center align-items-start"
-    >
+    <section class="theater-mode d-flex justify-content-center align-items-start">
       <div class="text-center position-relative">
         <img :src="'/thumbnail.png'" alt="" id="thumbnail" />
         <router-link to="/recommendation">
-          <button
-            class="btn btn-primary btn-lg btn-thumbnail position-absolute"
-          >
+          <button class="btn btn-primary btn-lg btn-thumbnail position-absolute">
             추천 시스템 체험하기
           </button>
         </router-link>
@@ -30,7 +26,7 @@ import NodeGraph from "@/assets/icons/NodeGraph.vue";
           <div class="card">
             <div class="card-body text-center">
               <h5 class="card-title">어디가지</h5>
-              <LocationDot style="width: 10%" class="mt-3 mb-3" />
+              <LocationDot style="height:2rem" class="mt-3 mb-3" />
               <p class="card-text">
                 방문한 지역들을 바탕으로 새로운 지역을 추천 받아보세요! 가장
                 가까운 곳, 비슷한 테마, 색다른 테마 3가지를 추천 받을 수
@@ -46,7 +42,7 @@ import NodeGraph from "@/assets/icons/NodeGraph.vue";
           <div class="card">
             <div class="card-body text-center">
               <h5 class="card-title">여행계획</h5>
-              <NodeGraph style="width: 10%" class="mt-3 mb-3" />
+              <NodeGraph style="height:2rem" class="mt-3 mb-3" />
               <p class="card-text">
                 지역들의 최단 경로를 조사해보고, 계획을 평가 받아보세요. 계획과
                 평가를 한번에 받는 서비스!
@@ -61,7 +57,7 @@ import NodeGraph from "@/assets/icons/NodeGraph.vue";
           <div class="card">
             <div class="card-body text-center">
               <h5 class="card-title">커뮤니티</h5>
-              <CommunityUsers style="width: 10%" class="mt-3 mb-3" />
+              <CommunityUsers style="height:2rem" class="mt-3 mb-3" />
               <p class="card-text">
                 다른 사람들의 생각은 어떨까요? 다른 사람과 생각도 공유해봐요!
               </p>
@@ -119,6 +115,7 @@ import NodeGraph from "@/assets/icons/NodeGraph.vue";
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
+  min-height: 300px;
 }
 
 .card-title {
@@ -131,6 +128,7 @@ import NodeGraph from "@/assets/icons/NodeGraph.vue";
   font-size: 14px;
   color: #6c757d;
   margin-bottom: 20px;
+  min-height: 80px;
 }
 
 .card .btn {
