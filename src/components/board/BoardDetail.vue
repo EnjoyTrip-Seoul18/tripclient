@@ -20,13 +20,7 @@
       </div>
 
       <!-- 댓글 섹션 -->
-      <div>
-        <h5 class="mb-3">댓글</h5>
-        <div v-for="(comment, index) in comments" :key="index" class="comment-card mb-3 p-3 shadow-sm">
-          <strong>{{ comment.author }}</strong>
-          <p class="mb-0">{{ comment.content }}</p>
-        </div>
-      </div>
+      <CommentSection/>
       <div class="d-flex justify-content-center mt-4">
         <RouterLink to="/board/list?pgno=1" class="btn btn-secondary me-2">
           목록으로 돌아가기
@@ -49,6 +43,7 @@ import router from "@/router";
 import { useRoute } from "vue-router";
 import { useMemberStore } from "@/stores/member";
 import { ref, onBeforeMount } from "vue";
+import CommentSection from "./items/CommentSection.vue";
 const board = ref({
   boardId: 0,
   memberId: "",
@@ -83,7 +78,6 @@ const getMemberId = async () => {
   await info(accessToken,
     (response) => {
       id = response.data.userInfo.memberId;
-      console.log(id);
     },
     (error) => {
       console.error(error);

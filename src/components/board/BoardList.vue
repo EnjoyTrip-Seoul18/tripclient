@@ -4,12 +4,8 @@
       <div class="col-lg-8 col-md-10 col-sm-12">
         <h2 class="my-3 py-3 text-center">커뮤니티</h2>
       </div>
-      <MenuBar
-        :options="menuOptions"
-        @option-change="handleOptionChange"
-        @search-change="handleSearchChange"
-        @search-submit="handleSearchSubmit"
-      />
+      <MenuBar :options="menuOptions" @option-change="handleOptionChange" @search-change="handleSearchChange"
+        @search-submit="handleSearchSubmit" />
       <table class="table table-hover">
         <thead>
           <tr class="text-center">
@@ -24,13 +20,10 @@
           <tr v-for="board in boards" :key="board.boardId" class="text-center">
             <th scope="row">{{ board.boardId }}</th>
             <td class="text-start">
-              <router-link
-                :to="{
+              <router-link :to="{
                   name: 'boardDetail',
                   params: { boardId: board.boardId },
-                }"
-                class="board-title link-dark"
-              >
+                }" class="board-title link-dark">
                 {{ board.subject }}
               </router-link>
             </td>
@@ -45,12 +38,8 @@
           글 작성
         </button>
       </RouterLink>
-      <Pagination
-        :total-items="Math.min(totalPageCount, 10)"
-        :items-per-page="10"
-        :current-page="currentPage"
-        @page-change="onPageChange"
-      />
+
+      <Pagination :totalPageCount="totalPageCount" :currentPage="currentPage" @page-change="onPageChange" />
     </div>
   </div>
 </template>
@@ -59,14 +48,17 @@
 import { listArticle } from "@/api/board";
 import router from "@/router";
 import { onBeforeMount, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import Pagination from "./items/Pagination.vue";
 
 const request = ref({});
 const boards = ref([]);
 const currentPage = ref(0);
 const totalPageCount = ref(0);
+const route = useRoute();
 
 const getList = async (request) => {
+  boards.value = [];
   await listArticle(
     request,
     (response) => {
@@ -81,8 +73,8 @@ const getList = async (request) => {
 };
 
 const menuOptions = ref([
-  { name: "제목", value: "subject" },
-  { name: "작성자", value: "memberId" },
+  { name: "제목", value: "subject"},
+  { name: "작성자", value: "user_id" },
 ]);
 
 const handleOptionChange = (selectedOption) => {
@@ -97,12 +89,13 @@ const handleSearchSubmit = () => {
   router.push({
     query: {
       ...router.currentRoute.value.query,
-      key: request.value.key,
-      word: request.value.word,
       pgno: 1,
+      key: route.query.key,
+      word: route.query.word,
     },
   });
-  getList(request);
+  // setRequest();
+  getList(urlBuilder());
 };
 
 const onPageChange = (newPage) => {
@@ -113,23 +106,31 @@ const onPageChange = (newPage) => {
       pgno: newPage,
     },
   });
-  getList(request);
+  // setRequest();
+  getList(urlBuilder());
 };
 
 onBeforeMount(async () => {
-  const route = useRoute();
+  setRequest();
+  await getList(urlBuilder());
+});
+
+const urlBuilder = () => {
+  let result = `/board/list?pgno=${request.value.pgno}&spp=${request.value.spp}`;
+  if (request.value.word) result += `&word=${request.value.word}`;
+  if (request.value.user_id)
+    result += `&user_id=${request.value.user_id}`;
+  return result;
+}
+
+const setRequest = () => {
   request.value = {
-    word: route.query.word || "",
-    pgno: route.query.pgno,
-    user_id: route.query.userId || "",
+    pgno: route.query.pgno || 1,
+    word: route.query.key === "subject" ? route.query.word : "",
+    user_id: route.query.key === "user_id" ? route.query.word : "",
     spp: 10,
   };
-  let requestUrl = `/board/list?pgno=${request.value.pgno}&spp=${request.value.spp}`;
-  if (request.value.word !== "") requestUrl += `&word=${request.value.word}`;
-  if (request.value["user_id"] !== "")
-    requestUrl += `&word=${request.value["user_id"]}`;
-  await getList(requestUrl);
-});
+}
 </script>
 
 <style></style>
