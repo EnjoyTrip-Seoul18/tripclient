@@ -4,6 +4,7 @@ import axios from "axios";
 const area = areaAxios();
 const server = serverAxios();
 const API_KEY = import.meta.env.VITE_GPT_API_SERVICE_KEY;
+const GPT = import.meta.env.VITE_VUE_GPT_URL;
 
 async function getData(url, success, fail) {
   await area.get(url).then(success).catch(fail);
@@ -14,17 +15,19 @@ async function getPath(attractions, success, fail) {
 }
 
 async function getReview(request, success, fail) {
-  await axios.post(
-    "https://api.openai.com/v1/chat/completions", {
-    model: "gpt-3.5-turbo",
-    messages: [
-        {
-          role: "system",
-        content: `You have been a tour guide for over 10 years. You know the famous and hidden tourist spots, accommodations, and restaurants in a given city, county, or state very well, and you are also a critic who values ​​efficiency above all else and hates wasting money on transportation and other expenses. You will have a travel plan from now on. You can think of it as moving from the first to the last in order. To help you make a travel plan, think of a travel route (a combination of the shortest distance and content type) between tourist spots and recommend an evaluation of the tour plan according to the given format.`
-        },
-        {
-          role: "user",
-          content: `
+  await axios
+    .post(
+      GPT,
+      {
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content: `You have been a tour guide for over 10 years. You know the famous and hidden tourist spots, accommodations, and restaurants in a given city, county, or state very well, and you are also a critic who values ​​efficiency above all else and hates wasting money on transportation and other expenses. You will have a travel plan from now on. You can think of it as moving from the first to the last in order. To help you make a travel plan, think of a travel route (a combination of the shortest distance and content type) between tourist spots and recommend an evaluation of the tour plan according to the given format.`,
+          },
+          {
+            role: "user",
+            content: `
             <instruction>
               우선 데이터는 다음과 같아. ${request} 각각이 의미하는 바는 다음과 같아:
               before : 출발지
@@ -49,16 +52,46 @@ async function getReview(request, success, fail) {
               "feedback" : "마지막에 멀리 떨어져 있는 관광지는 다른 테마의 근거리 관광지로 하는 편이 좋을 것 같아요.<b>10점 만점에 8점</b> 정도인 것 같아요"
             }
             </example>
-          `
-        }
-      ],
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`,
+          `,
+          },
+        ],
       },
-    }
-  ).then(success).catch(fail);
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${API_KEY}`,
+        },
+      }
+    )
+    .then(success)
+    .catch(fail);
 }
-export { getData, getPath, getReview };
+
+async function getSidos(success, fail) {
+  await server.get("/attraction/sido").then(success).catch(fail);
+}
+
+async function getGuguns(request, success, fail) {
+  await server
+    .get("/attraction/gugun/" + request)
+    .then(success)
+    .catch(fail);
+}
+
+async function getContentTypes(success, fail) {
+  await server.get("/attraction/contentType").then(success).catch(fail);
+}
+
+async function getList(request, success, fail) {
+  await server.post("/attraction/list", request).then(success).catch(fail);
+}
+
+export {
+  getData,
+  getPath,
+  getReview,
+  getSidos,
+  getGuguns,
+  getContentTypes,
+  getList,
+};

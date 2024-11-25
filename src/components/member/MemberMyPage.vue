@@ -80,8 +80,6 @@ onBeforeMount(async () => {
     (error) => {
       console.error("회원 정보 가져오기 실패:", error);
       alert("회원 정보를 가져오는 중 오류가 발생했습니다.");
-      memberStore.logout();
-      router.push("/member/login");
     }
   );
 });

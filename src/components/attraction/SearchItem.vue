@@ -2,8 +2,12 @@
   <tr>
     <td>{{ index + 1 }}</td>
     <td>
-      <img :src="props.item.image" onerror="this.src='https://via.placeholder.com/50'" alt=''
-        style="width: 50px; height: 50px" />
+      <img
+        :src="props.item.image ? props.item.image : '~/assets/logo.png'"
+        onerror="this.src='https://via.placeholder.com/50'"
+        alt=""
+        style="width: 50px; height: 50px"
+      />
     </td>
     <td>{{ props.item.name }}</td>
     <td>

@@ -45,37 +45,52 @@
 
     <!-- Navigation Button -->
     <div class="d-flex justify-content-center mt-5 mb-5">
-      <button class="btn btn-primary" @click="router.push('/')">홈으로 돌아가기</button>
+      <button class="btn btn-primary" @click="router.push('/')">
+        홈으로 돌아가기
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from 'vue';
-import { getReview } from '@/api/attraction'
-import { useMemberStore } from '@/stores/member'
-import router from '@/router';
-import Loading from '../common/Loading.vue';
+import { ref, onBeforeMount } from "vue";
+import { getReview } from "@/api/attraction";
+import { useMemberStore } from "@/stores/member";
+import router from "@/router";
+import Loading from "../common/Loading.vue";
 
 const memberStore = useMemberStore();
 
 const data = ref([]);
-const isLoading = ref(false);
-// const isLoading = ref(true);
+// const isLoading = ref(false);
+const isLoading = ref(true);
 const gptResponse = ref({
-  "total": "전체적으로 효율적인 여행 계획이네요! 짧은 거리로 이동하면서 다양한 관광지를 방문하는 것이 장점입니다.",
-  "good": "1. 짧은 거리에 다양한 관광지를 포함하여 일정이 다채로워 보입니다.<br>2. 숙소와 식당이 관광지 근처에 위치하여 이동이 용이한 점이 좋습니다.<br>3. 지도상에서 보면 순서대로 이동이 가능하므로 시간을 효율적으로 활용할 수 있을 것 같아요.<br>",
-  "bad": "1. 일부 관광지 사이의 거리가 조금 떨어져 있어 이동이 불편할 수 있습니다.<br>2. 모든 관광지가 비슷한 테마여서 다양성이 부족할 수 있습니다.<br>",
-  "feedback": "일부 거리가 떨어진 관광지는 순서를 조정하여 근거리에 있는 관광지와 교체해보면 더욱 효율적일 것 같습니다. <b>10점 만점에 9점</b>을 주고 싶네요."
+  total:
+    "전체적으로 효율적인 여행 계획이네요! 짧은 거리로 이동하면서 다양한 관광지를 방문하는 것이 장점입니다.",
+  good: "1. 짧은 거리에 다양한 관광지를 포함하여 일정이 다채로워 보입니다.<br>2. 숙소와 식당이 관광지 근처에 위치하여 이동이 용이한 점이 좋습니다.<br>3. 지도상에서 보면 순서대로 이동이 가능하므로 시간을 효율적으로 활용할 수 있을 것 같아요.<br>",
+  bad: "1. 일부 관광지 사이의 거리가 조금 떨어져 있어 이동이 불편할 수 있습니다.<br>2. 모든 관광지가 비슷한 테마여서 다양성이 부족할 수 있습니다.<br>",
+  feedback:
+    "일부 거리가 떨어진 관광지는 순서를 조정하여 근거리에 있는 관광지와 교체해보면 더욱 효율적일 것 같습니다. <b>10점 만점에 9점</b>을 주고 싶네요.",
 });
+
+const edit = (jsonWithTags) => {
+  return JSON.parse(
+    jsonWithTags
+      .replace(/```json/, "")
+      .replace(/```/, "")
+      .trim()
+  );
+};
 
 const createResponse = async () => {
   const { accessToken } = memberStore;
-  await getReview({
-      accessToken, data : data.value,
+  await getReview(
+    {
+      accessToken,
+      data: data.value,
     },
     (response) => {
-      gptResponse.value = response.data.choices[0].message.content.trim();
+      gptResponse.value = edit(response.data.choices[0].message.content.trim());
       isLoading.value = false;
     },
     (error) => {
@@ -83,8 +98,8 @@ const createResponse = async () => {
       alert("적절하지 못한 접근입니다.");
       router.push("/member/login");
     }
-  )
-}
+  );
+};
 
 onBeforeMount(() => {
   const accessToken = memberStore.accessToken;
@@ -93,8 +108,8 @@ onBeforeMount(() => {
     return router.push("/member/login");
   }
   data.value = JSON.parse(window.history.state.data);
-  // createResponse();
-})
+  createResponse();
+});
 </script>
 
 <style scoped>
@@ -108,7 +123,7 @@ onBeforeMount(() => {
 }
 
 .fadeIn {
-  animation: fadeInAnimation 1.0s ease-in-out;
+  animation: fadeInAnimation 1s ease-in-out;
 }
 
 @keyframes fadeInAnimation {

@@ -8,7 +8,7 @@ async function login(form, success, fail) {
 }
 
 async function info(request, success, fail) {
-  // console.log("member.js 회원 정보 요청");
+  // console.log("member.js 회원 정보 요청 ", request);
   await server
     .get("/member/info", {
       headers: {
@@ -20,20 +20,20 @@ async function info(request, success, fail) {
 }
 
 async function updateMember(request, success, fail) {
-  console.log("member.js 회원 정보 수정 요청");
+  // console.log("member.js 회원 정보 수정 요청");
   await server
-    .patch("/member/update", {
-      headers: {
-        Authorization: `Bearer ${request.accessToken.trim()}`
-      },
-      body: request.member
+    .patch("/member/update", 
+      request.member, {
+        headers: {
+          Authorization: `Bearer ${request.accessToken.trim()}`
+        },
     })
     .then(success)
     .catch(fail);
 }
 
 async function deleteMember(request, success, fail) {
-  console.log("member.js 회원 삭제 요청");
+  // console.log("member.js 회원 삭제 요청");
   await server
     .delete("/member/delete", {
       headers: {
@@ -45,7 +45,7 @@ async function deleteMember(request, success, fail) {
 }
 
 async function join(request, success, fail) {
-  console.log("member.js 회원 가입 요청 ", request);
+  // console.log("member.js 회원 가입 요청 ", request);
   await server
     .post("/member/join", request)
     .then(success)
@@ -53,13 +53,9 @@ async function join(request, success, fail) {
 }
 
 async function idCheck(request, success, fail) {
-  console.log("member.js 아이디 확인", request);
+  // console.log("member.js 아이디 확인", request);
   await server
-    .post("/member/idCheck", {
-      data: {
-        memberId : request,
-      },
-    })
+    .post("/member/idCheck", request)
     .then(success)
     .catch(fail);
 }

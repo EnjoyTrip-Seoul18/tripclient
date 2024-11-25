@@ -6,7 +6,7 @@
         <!-- 제목 입력 -->
         <div class="mb-3">
           <label for="title" class="form-label">제목</label>
-          <input type="text" id="title" class="form-control" placeholder="제목을 입력하세요" v-model="formData.title"
+          <input type="text" id="title" class="form-control" placeholder="제목을 입력하세요" v-model="formData.subject"
             required />
         </div>
 
@@ -36,24 +36,33 @@
 
 <script setup>
 import { ref } from "vue";
+import { writeArticle } from "@/api/board"
+import { useMemberStore } from "@/stores/member";
+import router from "@/router";
 
 // Form 데이터
 const formData = ref({
-  title: "",
+  subject: "",
   content: "",
 });
+const {accessToken} = useMemberStore();
 
 // 제출 핸들러
-const onSubmit = () => {
-  console.log("게시글 데이터:", formData.value);
-  alert("게시글이 작성되었습니다!");
+const onSubmit = async () => {
+  await writeArticle({
+    board: formData.value,
+    accessToken: accessToken
+  },
+  () => {
+    alert("게시글이 작성되었습니다!");
+    router.push("/board/list?pgno=1");
+  })
 };
 </script>
 
 <style>
 .fill-color2 {
   background-color: #f0f8ff;
-  /* 기본 색상 (하늘색 계열) */
   border-radius: 8px;
   border: 1px solid #ccc;
 }

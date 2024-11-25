@@ -18,5 +18,9 @@ export const useMemberStore = defineStore("member", () => {
     refreshToken.value = null;
   };
 
-  return { isLoggedIn, accessToken, refreshToken, login, logout };
+  const getToken = () => {
+    return localStorage.getItem("accessToken");
+  }
+
+  return { isLoggedIn, accessToken, refreshToken, login, logout, getToken };
 },{persist : true});
