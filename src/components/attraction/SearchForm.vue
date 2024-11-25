@@ -1,18 +1,30 @@
 <template>
   <form @submit.prevent="emitSearch">
     <div class="formClass mb-3">
-      <select v-model="localsido" class="form-select select-box">
+      <select
+        v-model="localsido"
+        class="form-select select-box"
+        @change="setGugun"
+      >
         <option value="0" selected>검색 할 지역 선택</option>
-        <option v-for="sido in sidos" :key="sido.value" :value="sido.value">
-          {{ sido.label }}
+        <option
+          v-for="sido in sidos"
+          :key="sido.sidoCode"
+          :value="sido.sidoCode"
+        >
+          {{ sido.sidoName }}
         </option>
       </select>
     </div>
     <div class="formClass mb-3">
       <select v-model="localgugun" class="form-select select-box">
         <option value="0" selected>구/군</option>
-        <option v-for="gu in guguns" :key="gu.value" :value="gu.value">
-          {{ gu.label }}
+        <option
+          v-for="gu in localguguns"
+          :key="gu.gugunCode"
+          :value="gu.gugunCode"
+        >
+          {{ gu.gugunName }}
         </option>
       </select>
     </div>
@@ -21,10 +33,10 @@
         <option value="0" selected>관광지 유형</option>
         <option
           v-for="type in contentTypes"
-          :key="type.value"
-          :value="type.value"
+          :key="type.contentTypeId"
+          :value="type.contentTypeId"
         >
-          {{ type.label }}
+          {{ type.contentTypeName }}
         </option>
       </select>
     </div>
@@ -43,6 +55,7 @@
 </template>
 
 <script setup>
+import { getGuguns } from "@/api/attraction";
 import SearchIcon from "@/assets/icons/SearchIcon.vue";
 import { ref, watch } from "vue";
 
@@ -61,10 +74,11 @@ const props = defineProps({
 const emit = defineEmits(["search"]);
 
 // Local Data
-const localsido = ref("");
-const localgugun = ref("");
-const localcontentType = ref("");
+const localsido = ref("0");
+const localgugun = ref("0");
+const localcontentType = ref("0");
 const localkeyword = ref("");
+const localguguns = ref([]);
 
 // Props와 Local Data 동기화
 watch(
@@ -82,10 +96,23 @@ watch(
 const emitSearch = () => {
   emit("search", {
     sido: localsido.value,
-    gu: localgugun.value,
-    type: localcontentType.value,
+    gugun: localgugun.value,
+    contentType: localcontentType.value,
     keyword: localkeyword.value,
   });
+};
+
+const setGugun = async () => {
+  localgugun.value = "0";
+  await getGuguns(
+    localsido.value,
+    (response) => {
+      localguguns.value = response.data;
+    },
+    (error) => {
+      console.error(error);
+    }
+  );
 };
 </script>
 

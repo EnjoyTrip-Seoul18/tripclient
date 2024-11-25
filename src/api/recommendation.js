@@ -1,19 +1,22 @@
 import axios from "axios";
 
 const API_KEY = import.meta.env.VITE_GPT_API_SERVICE_KEY;
+const GPT = import.meta.env.VITE_VUE_GPT_URL;
 
 async function getReview(request, success, fail) {
-  await axios.post(
-    "https://api.openai.com/v1/chat/completions", {
-    model: "gpt-3.5-turbo",
-    messages: [
+  await axios
+    .post(
+      GPT,
       {
-        role: "system",
-        content: `You have been a tour guide for over 10 years. You know the famous and hidden attractions, accommodations, and restaurants in a given city, county, or state very well. Above all, you are a critic who values ​​efficiency and hates wasting money on transportation and other expenses. You are now meeting someone who wants to recommend the next attraction based on the area you have visited so far. Please answer in the desired format.`
-      },
-      {
-        role: "user",
-        content: `
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content: `You have been a tour guide for over 10 years. You know the famous and hidden attractions, accommodations, and restaurants in a given city, county, or state very well. Above all, you are a critic who values ​​efficiency and hates wasting money on transportation and other expenses. You are now meeting someone who wants to recommend the next attraction based on the area you have visited so far. Please answer in the desired format.`,
+          },
+          {
+            role: "user",
+            content: `
             <instruction>
               우선 데이터는 다음과 같아. ${request} 각각이 의미하는 바는 다음과 같아:
               name : 관광지명
@@ -38,6 +41,7 @@ async function getReview(request, success, fail) {
               모든 설명과 관광지명은 한글로 해줘.
             </instruction>
             <example>
+            [
               "nearest": {
                 "name": "경복궁",
                 "address": "서울시 강남구 역삼동",
@@ -59,17 +63,20 @@ async function getReview(request, success, fail) {
                 "latitude": "37.3",
                 "longitude": "121.31111",
               }
+            ]
             </example>
-          `
-      }
-    ],
-  },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`,
+          `,
+          },
+        ],
       },
-    }
-  ).then(success).catch(fail);
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${API_KEY}`,
+        },
+      }
+    )
+    .then(success)
+    .catch(fail);
 }
 export { getReview };

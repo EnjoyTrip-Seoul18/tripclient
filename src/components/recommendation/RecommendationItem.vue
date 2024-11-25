@@ -2,12 +2,18 @@
   <tr>
     <td>{{ index + 1 }}</td>
     <td>
-      <img :src="props.item.image" onerror="this.src='https://via.placeholder.com/50'" alt=''
-        style="width: 50px; height: 50px" />
+      <img
+        :src="props.item.image ? props.item.image : '~/assets/logo.png'"
+        alt=""
+        style="width: 50px; height: 50px"
+      />
     </td>
     <td>{{ props.item.name }}</td>
     <td>
-      <button class="btn btn-primary me-2 mb-2" @click="addRecommendation(props.item)">
+      <button
+        class="btn btn-primary me-2 mb-2"
+        @click="addRecommendation(props.item)"
+      >
         선택하기
       </button>
     </td>
