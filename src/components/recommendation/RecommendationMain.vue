@@ -78,7 +78,7 @@
     <!-- 최적화 버튼 -->
     <div class="text-center mt-5">
       <button class="btn btn-primary" @click="getRecommendationResult">
-        최적의 여행 계획 짜기!
+        어디갈지 추천받기!
       </button>
     </div>
   </div>
