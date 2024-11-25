@@ -180,8 +180,8 @@ const createResponse = async () => {
     },
     (error) => {
       console.error(error);
-      alert("적절하지 못한 접근입니다.");
-      router.push("/member/login");
+      // alert("적절하지 못한 접근입니다.");
+      // router.push("/member/login");
     }
   );
 };
