@@ -11,6 +11,8 @@
   "dependencies": {
     "@fontsource/noto-sans": "^5.1.0",
     "@fontsource/noto-sans-kr": "^5.1.0",
+    "@fortawesome/fontawesome-svg-core": "^6.7.1",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.26.0",
