@@ -4,8 +4,12 @@
       <div class="col-lg-8 col-md-10 col-sm-12">
         <h2 class="my-3 py-3 text-center">커뮤니티</h2>
       </div>
-      <MenuBar :options="menuOptions" @option-change="handleOptionChange" @search-change="handleSearchChange"
-        @search-submit="handleSearchSubmit" />
+      <MenuBar
+        :options="menuOptions"
+        @option-change="handleOptionChange"
+        @search-change="handleSearchChange"
+        @search-submit="handleSearchSubmit"
+      />
       <table class="table table-hover">
         <thead>
           <tr class="text-center">
@@ -20,8 +24,13 @@
           <tr v-for="board in boards" :key="board.boardId" class="text-center">
             <th scope="row">{{ board.boardId }}</th>
             <td class="text-start">
-              <router-link :to="{ name: 'boardDetail', params: { boardId: board.boardId } }"
-                class="board-title link-dark">
+              <router-link
+                :to="{
+                  name: 'boardDetail',
+                  params: { boardId: board.boardId },
+                }"
+                class="board-title link-dark"
+              >
                 {{ board.subject }}
               </router-link>
             </td>
@@ -32,18 +41,25 @@
         </tbody>
       </table>
       <RouterLink :to="'/board/write'">
-        <button class="btn btn-primary ms-3 mb-3 row justify-content-center">글 작성</button>
+        <button class="btn btn-primary ms-3 mb-3 row justify-content-center">
+          글 작성
+        </button>
       </RouterLink>
-      <Pagination :total-items="totalPageCount" :items-per-page="10" :current-page="currentPage" @page-change="onPageChange" />
+      <Pagination
+        :total-items="Math.min(totalPageCount, 10)"
+        :items-per-page="10"
+        :current-page="currentPage"
+        @page-change="onPageChange"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import { listArticle } from '@/api/board';
-import router from '@/router';
-import { onBeforeMount, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { listArticle } from "@/api/board";
+import router from "@/router";
+import { onBeforeMount, ref } from "vue";
+import { useRoute } from "vue-router";
 
 const request = ref({});
 const boards = ref([]);
@@ -51,7 +67,8 @@ const currentPage = ref(0);
 const totalPageCount = ref(0);
 
 const getList = async (request) => {
-  await listArticle(request,
+  await listArticle(
+    request,
     (response) => {
       response.data.articles.forEach((board) => boards.value.push(board));
       currentPage.value = response.data.currentPage;
@@ -60,8 +77,8 @@ const getList = async (request) => {
     (error) => {
       console.error(error);
     }
-  )
-}
+  );
+};
 
 const menuOptions = ref([
   { name: "제목", value: "subject" },
@@ -102,12 +119,16 @@ const onPageChange = (newPage) => {
 onBeforeMount(async () => {
   const route = useRoute();
   request.value = {
-    "word": route.query.word,
-    "pgno": route.query.pgno,
-    "user_id": route.query.userId,
-    "spp": 10
+    word: route.query.word || "",
+    pgno: route.query.pgno,
+    user_id: route.query.userId || "",
+    spp: 10,
   };
-  await getList(request);
+  let requestUrl = `/board/list?pgno=${request.value.pgno}&spp=${request.value.spp}`;
+  if (request.value.word !== "") requestUrl += `&word=${request.value.word}`;
+  if (request.value["user_id"] !== "")
+    requestUrl += `&word=${request.value["user_id"]}`;
+  await getList(requestUrl);
 });
 </script>
 

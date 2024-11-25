@@ -3,19 +3,32 @@
     <ul class="pagination justify-content-center">
       <!-- Previous Button -->
       <li class="page-item" :class="{ disabled: currentPage === 1 }">
-        <button class="page-link" @click="changePage(currentPage - 1)" :disabled="currentPage === 1">
+        <button
+          class="page-link"
+          @click="changePage(currentPage - 1)"
+          :disabled="currentPage === 1"
+        >
           Previous
         </button>
       </li>
 
       <!-- Page Numbers -->
-      <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+      <li
+        v-for="page in totalPages"
+        :key="page"
+        class="page-item"
+        :class="{ active: page === currentPage }"
+      >
         <button class="page-link" @click="changePage(page)">{{ page }}</button>
       </li>
 
       <!-- Next Button -->
       <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-        <button class="page-link" @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">
+        <button
+          class="page-link"
+          @click="changePage(currentPage + 1)"
+          :disabled="currentPage === totalPages"
+        >
           Next
         </button>
       </li>
@@ -47,7 +60,9 @@ export default defineComponent({
     const { totalItems, itemsPerPage, currentPage } = toRefs(props);
 
     // Calculate total pages
-    const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
+    const totalPages = computed(() =>
+      Math.ceil(totalItems.value / itemsPerPage.value)
+    );
 
     // Emit page change event
     const changePage = (page) => {
