@@ -2,9 +2,9 @@ import { serverAxios } from "@/util/http-commons";
 
 const server = serverAxios();
 
-async function writeArticle(request, success, fail) {
+async function listCommentAPI(request, success, fail) {
   await server
-    .post("/board", request.board, {
+    .get(`/comment/list/${request.boardId}`, {
       headers: {
         Authorization: `Bearer ${request.accessToken}`,
       },
@@ -13,13 +13,9 @@ async function writeArticle(request, success, fail) {
     .catch(fail);
 }
 
-async function listArticle(request, success, fail) {
-  await server.get(request).then(success).catch(fail);
-}
-
-async function getArticle(request, success, fail) {
+async function writeCommentAPI(request, success, fail) {
   await server
-    .get(`/board/${request.boardId}`, {
+    .post(`/comment/`, request.comment, {
       headers: {
         Authorization: `Bearer ${request.accessToken}`,
       },
@@ -28,9 +24,9 @@ async function getArticle(request, success, fail) {
     .catch(fail);
 }
 
-async function modifyArticle(request, success, fail) {
+async function updateCommentAPI(request, success, fail) {
   await server
-    .put(`/board/${request.board.boardId}`, request.board, {
+    .put(`/comment/${request.comment.commentId}`, request.comment, {
       headers: {
         Authorization: `Bearer ${request.accessToken}`,
       },
@@ -39,9 +35,9 @@ async function modifyArticle(request, success, fail) {
     .catch(fail);
 }
 
-async function deleteArticle(request, success, fail) {
+async function deleteCommentAPI(request, success, fail) {
   await server
-    .delete(`/board/${request.boardId}`, {
+    .delete(`/comment/${request.commentId}`, {
       headers: {
         Authorization: `Bearer ${request.accessToken}`,
       },
@@ -50,4 +46,4 @@ async function deleteArticle(request, success, fail) {
     .catch(fail);
 }
 
-export { writeArticle, listArticle, getArticle, modifyArticle, deleteArticle };
+export { listCommentAPI, writeCommentAPI, updateCommentAPI, deleteCommentAPI };

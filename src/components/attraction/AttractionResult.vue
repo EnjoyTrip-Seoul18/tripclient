@@ -4,15 +4,31 @@
     <div class="row"></div>
     <div class="col-md-12">
       <h2 class="mb-3 header-title">최적의 여행계획 짜기!</h2>
-      <KakaoMap :lat="latLngList[latLngList.length - 1].lat" :lng="latLngList[latLngList.length - 1].lng"
-        :draggable="true" style="width: 100%; height: 400px" class="mt-3">
-        <KakaoMapMarkerPolyline :markerList="latLngList" strokeColor="#C74C5E" :strokeOpacity="1" />
+      <KakaoMap
+        :lat="latLngList[latLngList.length - 1].lat"
+        :lng="latLngList[latLngList.length - 1].lng"
+        :draggable="true"
+        style="width: 100%; height: 400px"
+        class="mt-3"
+      >
+        <KakaoMapMarkerPolyline
+          :markerList="latLngList"
+          strokeColor="#C74C5E"
+          :strokeOpacity="1"
+        />
       </KakaoMap>
     </div>
     <div v-for="(pair, index) in pairIndex" :key="index" class="route-card">
       <div class="place">
-        <img v-if="attractions[pair.before].image" :src="attractions[pair.before].image" alt="Place Image"
-          class="place-image" />
+        <img
+          :src="
+            attractions[pair.before].image
+              ? attractions[pair.before].image
+              : '/50.png'
+          "
+          alt="Place Image"
+          class="place-image"
+        />
         <div class="place-details">
           <h3>{{ attractions[pair.before].name }}</h3>
           <p>{{ attractions[pair.before].address }}</p>
@@ -23,8 +39,15 @@
         <span class="distance">{{ distance[index].toFixed(2) }} km</span>
       </div>
       <div class="place">
-        <img v-if="attractions[pair.after].image" :src="attractions[pair.after].image" alt="Place Image"
-          class="place-image" />
+        <img
+          :src="
+            attractions[pair.after].image
+              ? attractions[pair.after].image
+              : '/50.png'
+          "
+          alt="Place Image"
+          class="place-image"
+        />
         <div class="place-details">
           <h3>{{ attractions[pair.after].name }}</h3>
           <p>{{ attractions[pair.after].address }}</p>
@@ -33,12 +56,21 @@
     </div>
     <div class="d-flex mt-5 justify-content-center">
       <div v-if="isLoggedIn">
-        <button class="btn btn-primary me-3" @click="attractionReview()">여행 계획 평가하기</button>
-        <button class="btn btn-secondary" @click="router.back()">계획 다시 짜기</button>
+        <button class="btn btn-primary me-3" @click="attractionReview()">
+          여행 계획 평가하기
+        </button>
+        <button class="btn btn-secondary" @click="router.back()">
+          계획 다시 짜기
+        </button>
       </div>
       <div v-else>
         여행 계획을 평가해볼까요?
-        <button class="btn btn-primary ms-3" @click="router.push('/member/login')">로그인 후 진행</button>
+        <button
+          class="btn btn-primary ms-3"
+          @click="router.push('/member/login')"
+        >
+          로그인 후 진행
+        </button>
       </div>
       <div></div>
     </div>
@@ -70,8 +102,8 @@ const changeType = () => {
     latLng.lat = attraction.latitude;
     latLng.lng = attraction.longitude;
     latLngList.value.push(latLng);
-  })
-}
+  });
+};
 
 const handleResult = async () => {
   await getPath(
@@ -80,10 +112,11 @@ const handleResult = async () => {
       latLngList.value = response.data.attractionList;
       distance.value = response.data.distanceList;
       let before = 0;
-      for(let data of latLngList.value) {
-        if(data.index == before) continue;
+      for (let data of latLngList.value) {
+        if (data.index == before) continue;
         pairIndex.value.push({
-          before, after: data.index
+          before,
+          after: data.index,
         });
         before = data.index;
       }
@@ -102,15 +135,16 @@ const attractionReview = () => {
     item.after = attractions.value[pair.after];
     item.distance = distance.value[index];
     data.push(item);
-  })
-  router.push({
-    name: 'review', state: { data: JSON.stringify(data) }
   });
-}
+  router.push({
+    name: "review",
+    state: { data: JSON.stringify(data) },
+  });
+};
 
 onBeforeMount(() => {
   changeType();
-  handleResult()
+  handleResult();
 });
 </script>
 

@@ -191,7 +191,7 @@ const getRecommendationResult = () => {
     return;
   }
 
-  console.log("Recommendation:", recommendation);
+  // console.log("Recommendation:", recommendation);
   router.push("/recommendation/review");
 };
 

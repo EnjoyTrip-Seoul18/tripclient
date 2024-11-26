@@ -65,6 +65,10 @@ export const useStorageStore = defineStore(
       end.value = JSON.parse(localStorage.getItem("end")) || [];
     };
 
+    const clearMid = () => {
+      mid.value = [];
+    }
+
     return {
       start,
       mid,
@@ -75,6 +79,7 @@ export const useStorageStore = defineStore(
       removeStart,
       removeMid,
       removeEnd,
+      clearMid,
       loadFromLocalStorage,
     };
   },

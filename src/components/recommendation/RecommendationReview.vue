@@ -3,33 +3,19 @@
     <Loading v-model="isLoading" />
   </div>
   <div v-else class="fadeIn container mt-4">
-    <KakaoMap
-      :lat="gptResponse.nearest.latitude"
-      :lng="gptResponse.nearest.longitude"
-      :draggable="true"
-      style="width: 100%; height: 400px"
-      class="mt-3 mb-5"
-      id="kakao-map"
-    >
+    <KakaoMap :lat="gptResponse.nearest.latitude" :lng="gptResponse.nearest.longitude" :draggable="true"
+      style="width: 100%; height: 400px" class="mt-3 mb-5" id="kakao-map">
       <div v-for="(item, index) in recommendation" :key="index">
-        <KakaoMapMarker
-          :lat="item.latitude"
-          :lng="item.longitude"
-          :clickable="true"
-        />
+        <KakaoMapMarker :lat="item.latitude" :lng="item.longitude" :clickable="true" />
       </div>
       <div v-for="(item, index) in gptResponse" :key="index">
-        <KakaoMapMarker
-          :lat="item.latitude"
-          :lng="item.longitude"
-          :image="{
+        <KakaoMapMarker :lat="item.latitude" :lng="item.longitude" :image="{
             imageSrc:
               'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png',
             imageWidth: 64,
             imageHeight: 64,
             imageOption: {},
-          }"
-        />
+          }" />
       </div>
     </KakaoMap>
     <!-- gptResponse.nearest -->
@@ -38,8 +24,7 @@
         <h4>가장 가까운 여행지 추천해주세요! 🚩</h4>
       </div>
       <div class="card-body">
-        <div
-          style="
+        <div style="
             padding: 10px;
             background-color: white;
             border: 1px solid #ccc;
@@ -47,8 +32,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-          "
-        >
+          ">
           <div style="font-weight: bold; margin-bottom: 5px">
             {{ gptResponse.nearest.name }}
           </div>
@@ -64,8 +48,7 @@
         <h4>지금과 비슷한 여행지를 가고 싶어요! 🧭</h4>
       </div>
       <div class="card-body">
-        <div
-          style="
+        <div style="
             padding: 10px;
             background-color: white;
             border: 1px solid #ccc;
@@ -73,8 +56,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-          "
-        >
+          ">
           <div style="font-weight: bold; margin-bottom: 5px">
             {{ gptResponse.similar.name }}
           </div>
@@ -90,8 +72,7 @@
         <h4>색다른 여행지를 가고 싶어요! 🗺️</h4>
       </div>
       <div class="card-body">
-        <div
-          style="
+        <div style="
             padding: 10px;
             background-color: white;
             border: 1px solid #ccc;
@@ -99,8 +80,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-          "
-        >
+          ">
           <div style="font-weight: bold; margin-bottom: 5px">
             {{ gptResponse.different.name }}
           </div>
@@ -111,9 +91,13 @@
     </div>
     <!-- Navigation Button -->
     <div class="d-flex justify-content-center mt-5 mb-5">
-      <button class="btn btn-primary" @click="router.push('/')">
+      <button class="btn btn-primary me-3" @click="openModal">
+        새로운 추천지로 여행 계획 세우기
+      </button>
+      <button class="btn btn-secondary" @click="router.push('/')">
         홈으로 돌아가기
       </button>
+      <RecommendationModal v-if="isModalOpen" :gptResponse="gptResponse" @close="closeModal" />
     </div>
   </div>
 </template>
@@ -126,6 +110,7 @@ import { useRecommendationStore } from "@/stores/recommendation";
 import router from "@/router";
 import Loading from "@/components/common/Loading.vue";
 import { KakaoMap, KakaoMapMarker } from "vue3-kakao-maps";
+import RecommendationModal from "./RecommendationModal.vue";
 
 const memberStore = useMemberStore();
 const { recommendation } = useRecommendationStore();
@@ -184,6 +169,16 @@ const createResponse = async () => {
       // router.push("/member/login");
     }
   );
+};
+
+const isModalOpen = ref(false);
+
+const openModal = () => {
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
 };
 
 onBeforeMount(() => {
