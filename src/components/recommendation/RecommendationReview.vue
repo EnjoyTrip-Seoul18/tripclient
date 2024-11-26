@@ -144,6 +144,7 @@ const gptResponse = ref({
 });
 
 const edit = (jsonWithTags) => {
+  console.log(jsonWithTags);
   return JSON.parse(
     jsonWithTags
       .replace(/```json/, "")

@@ -39,10 +39,10 @@ async function getReview(request, success, fail) {
               "latitude": 위도, double 형태
               "longitude": 경도, double 형태
 
-              모든 설명과 관광지명은 한글로 해줘.
+              모든 설명과 관광지명은 한글로 해줘. 잡다한 설명 빼고 아래 example 형태로만 줘.
             </instruction>
             <example>
-            [
+            {
               "nearest": {
                 "name": "경복궁",
                 "address": "서울시 강남구 역삼동",
@@ -64,7 +64,7 @@ async function getReview(request, success, fail) {
                 "latitude": "37.3",
                 "longitude": "121.31111",
               }
-            ]
+            }
             </example>
           `,
           },
