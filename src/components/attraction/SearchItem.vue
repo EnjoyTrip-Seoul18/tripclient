@@ -3,7 +3,7 @@
     <td>{{ index + 1 }}</td>
     <td>
       <img
-        :src="props.item.image ? props.item.image : '~/assets/logo.png'"
+        :src="props.item.image ? props.item.image : '/50.png'"
         onerror="this.src='https://via.placeholder.com/50'"
         alt=""
         style="width: 50px; height: 50px"

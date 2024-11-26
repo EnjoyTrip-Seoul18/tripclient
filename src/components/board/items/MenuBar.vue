@@ -29,7 +29,7 @@ import { ref, defineEmits } from "vue";
 // Define options for the select box
 const options = ref([
   { name: "제목", value: "subject" },
-  { name: "작성자", value: "memberId" },
+  { name: "작성자", value: "user_id" },
 ]);
 
 // Define emits
