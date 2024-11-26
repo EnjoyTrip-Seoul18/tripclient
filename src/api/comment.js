@@ -2,9 +2,9 @@ import { serverAxios } from "@/util/http-commons";
 
 const server = serverAxios();
 
-async function listComment(request, success, fail) {
+async function listCommentAPI(request, success, fail) {
   await server
-    .get(`/comment/list/${boardId}`, {
+    .get(`/comment/list/${request.boardId}`, {
       headers: {
         Authorization: `Bearer ${request.accessToken}`,
       },
@@ -13,7 +13,7 @@ async function listComment(request, success, fail) {
     .catch(fail);
 }
 
-async function writeComment(request, success, fail) {
+async function writeCommentAPI(request, success, fail) {
   await server
     .post(`/comment/`, request.comment, {
       headers: {
@@ -24,7 +24,7 @@ async function writeComment(request, success, fail) {
     .catch(fail);
 }
 
-async function updateComment(request, success, fail) {
+async function updateCommentAPI(request, success, fail) {
   await server
     .put(`/comment/${request.comment.commentId}`, request.comment, {
       headers: {
@@ -35,7 +35,7 @@ async function updateComment(request, success, fail) {
     .catch(fail);
 }
 
-async function deleteComment(request, success, fail) {
+async function deleteCommentAPI(request, success, fail) {
   await server
     .delete(`/comment/${request.commentId}`, {
       headers: {
@@ -46,4 +46,4 @@ async function deleteComment(request, success, fail) {
     .catch(fail);
 }
 
-export { listComment, writeComment, updateComment, deleteComment };
+export { listCommentAPI, writeCommentAPI, updateCommentAPI, deleteCommentAPI };
